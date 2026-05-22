@@ -1,6 +1,6 @@
 # Claude Code Elastic OTel Lab
 
-This is a local lab I built to test Claude Code OpenTelemetry export with Elasticsearch/Kibana and to explore ideas for security detections and monitoring.
+This is a local lab I built to test Claude Code OpenTelemetry export with Elasticsearch/Kibana and to explore ideas for security detections and monitoring. I've documented the ideas I came up with [here](https://github.com/marcopedrinazzi/detection-rules/blob/main/ideas/otel-claude-code/otel-claude-code.md)
 
 It is not production hardened. It is meant for local experimentation, schema inspection, and detection brainstorming.
 
