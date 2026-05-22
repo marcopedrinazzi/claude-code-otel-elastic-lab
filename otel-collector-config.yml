@@ -1,0 +1,49 @@
+receivers:
+  otlp:
+    protocols:
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  memory_limiter:
+    check_interval: 1s
+    limit_mib: 512
+    spike_limit_mib: 128
+
+  resource/claude_code_logs:
+    attributes:
+      - key: service.name
+        value: claude-code
+        action: upsert
+      - key: data_stream.type
+        value: logs
+        action: upsert
+      - key: data_stream.dataset
+        value: claude_code.otel
+        action: upsert
+      - key: data_stream.namespace
+        value: default
+        action: upsert
+
+  batch:
+    timeout: 5s
+    send_batch_size: 1024
+
+exporters:
+  elasticsearch/logs:
+    endpoints: ["http://elasticsearch:9200"]
+    user: elastic
+    password: ${env:ELASTIC_PASSWORD}
+    logs_index: logs-claude_code.otel-default
+    mapping:
+      mode: otel
+
+  debug:
+    verbosity: basic
+
+service:
+  pipelines:
+    logs:
+      receivers: [otlp]
+      processors: [memory_limiter, resource/claude_code_logs, batch]
+      exporters: [elasticsearch/logs, debug]
